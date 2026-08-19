@@ -75,7 +75,7 @@ El dispositivo levanta un **Access Point** (`ESP32-gilbert`) con un **servidor w
 persistidas en memoria (`Preferences`). Dos switches (`sw1`/`sw2`) del dashboard controlan
 el color de un indicador en pantalla.
 
-Consulta la bitácora de cada práctica en [`_docs/`](_docs):
+Consultar la bitácora de cada práctica en [`_docs/`](_docs):
 [Práctica 1](_docs/01_ubidots_connection.md) ·
 [Práctica 2](_docs/02_ubidots_subscription.md) ·
 [Práctica 3](_docs/03_webserver_accesspoint.md).
@@ -94,18 +94,14 @@ Consulta la bitácora de cada práctica en [`_docs/`](_docs):
 
 ## Configuración de credenciales
 
-Los sketches necesitan tu red Wi-Fi y tu token de Ubidots. Reemplaza los marcadores por tus
-valores **localmente**, tal como ya se hace en `ubidots_sub.ino`:
+Los sketches necesitan red Wi-Fi y tu token de Ubidots. Reemplaza los marcadores por
+valores **locales**:
 
 ```cpp
 const char *UBIDOTS_TOKEN = "TU_TOKEN_AQUI";
 const char *WIFI_SSID     = "TU_WIFI_AQUI";
 const char *WIFI_PASS     = "TU_PASSWORD_AQUI";
 ```
-
-> ⚠️ **No subas credenciales reales a GitHub.** El token de Ubidots y la contraseña de tu Wi-Fi
-> son secretos: si se publican quedan en el historial de git aunque después los borres.
-> Usa siempre marcadores en el código versionado y coloca tus valores reales solo en tu copia local.
 
 ---
 
