@@ -1,0 +1,34 @@
+# --- Arduino / ESP32 build ---
+build/
+*.bin
+*.elf
+*.hex
+*.map
+*.d
+*.o
+.build/
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Arduino IDE
+*.tmp
+.arduino/
+.vscode/
+
+# --- Credenciales / secretos (nunca versionar valores reales) ---
+secrets.h
+credentials.h
+arduino_secrets.h
+*.local
+
+# --- Sistema operativo ---
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# macOS
+.DS_Store
+# Linux
+*~
