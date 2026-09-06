@@ -2,22 +2,21 @@
 
 Repositorio de las actividades entregables de la asignatura **Diseño Electrónico**, enfocadas
 en **IoT y sistemas embebidos**. El hardware base es una placa **ESP32 TTGO T-Display**
-(pantalla TFT ST7789V de 135×240) con un sensor **DHT11**, publicando y recibiendo datos
-desde la plataforma **Ubidots** por **MQTT**.
-
+(pantalla TFT ST7789V de 135×240).
 **Autor:** Gildardo Estevan Restrepo Duque
 
 ---
 
 ## Hardware utilizado
 
-| Componente        | Detalle                                              |
-| ----------------- | ---------------------------------------------------- |
-| Placa             | ESP32 **TTGO T-Display** (pantalla ST7789V 135×240)  |
-| Sensor            | **DHT11** (temperatura y humedad), pin de datos GPIO 25 |
-| Backlight TFT     | GPIO 4                                                |
-| Conectividad      | Wi-Fi + MQTT hacia **Ubidots**                        |
+| Componente    | Detalle                                                 |
+| ------------- | ------------------------------------------------------- |
+| Placa         | ESP32 **TTGO T-Display** (pantalla ST7789V 135×240)     |
+| Sensor        | **DHT11** (temperatura y humedad), pin de datos GPIO 25 |
+| Backlight TFT | GPIO 4                                                  |
+| Conectividad  | Wi-Fi + MQTT                                            |
 
+---
 ## Software y librerías
 
 - **Arduino IDE** con soporte para placas ESP32.
@@ -56,7 +55,6 @@ Cada carpeta `*.ino` es un sketch independiente de Arduino (el nombre del `.ino`
 el de su carpeta contenedora, como exige el Arduino IDE).
 
 ---
-
 ## Prácticas
 
 ### 01 — Conexión a Ubidots
@@ -89,8 +87,8 @@ Consultar la bitácora de cada práctica en [`_docs/`](_docs):
 3. Abre la carpeta del sketch que quieras probar (p. ej. `01_ubidots_connection/ubidots_dht11`).
 4. Completa tus credenciales de Wi-Fi y tu token de Ubidots (ver **Configuración de credenciales**).
 5. Selecciona la placa **TTGO T-Display / ESP32 Dev Module**, el puerto correcto y carga.
-
 ---
+<<<<<<< Updated upstream
 
 ## Configuración de credenciales
 
@@ -105,6 +103,9 @@ const char *WIFI_PASS     = "TU_PASSWORD_AQUI";
 
 ---
 
+=======
+>>>>>>> Stashed changes
 ## Licencia
 
 Distribuido bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICENSE).
+
