@@ -15,8 +15,7 @@ tags:
 Sustituir la plataforma en la nube de las prácticas anteriores por una infraestructura
 MQTT **completamente local**: un broker **Mosquitto** propio, un dashboard construido en
 **Node-RED** y el ESP32 como cliente, todos en la misma red. El propósito es dejar de
-consumir una plataforma cerrada y pasar a **operar el protocolo directamente**, lo que
-obliga a resolver a mano tres mecanismos que Ubidots gestionaba por debajo.
+consumir una plataforma cerrada y pasar a **operar el protocolo directamente**.
 
 Además se cambia el entorno de desarrollo: esta práctica abandona el Arduino IDE y usa
 **VS Code con PlatformIO**.
@@ -96,6 +95,7 @@ Librerías del firmware (fijadas en `platformio.ini`): `PubSubClient`, `DHT sens
 6. Construcción del dashboard en Node-RED.
 7. Demostración del reparto uno a muchos y del LWT.
 
+---
 ## Proyecto de esta práctica
 
 - [`esp32_mqtt_local`](../05_mqtt_local_nodered/esp32_mqtt_local) — proyecto PlatformIO
@@ -133,19 +133,18 @@ un nodo `json` y un `change` por cada widget.
 Nótese que `alertas/panico` **cuelga fuera** de `gilbert/ttgo/`: no pertenece a ningún
 dispositivo concreto, porque cualquiera puede publicarlo y todos lo escuchan.
 
+---
 ### Mensajes retenidos (`retained`)
 
 El broker guarda el último mensaje marcado como retenido en cada tópico y se lo entrega
 **inmediatamente** a cualquier cliente que se suscriba después. Sin esto, un dashboard
 recién abierto se quedaría en blanco hasta la siguiente publicación del sensor (hasta 5 s).
 
-Se comprobó publicando un mensaje retenido y suscribiéndose **después**: el suscriptor lo
-recibió al instante de conectarse.
+Se comprobó publicando un mensaje retenido y suscribiéndose **después**.
 
-La alerta de pánico **no** es retenida, y es deliberado: una alerta es un evento puntual.
-Si fuera retenida, todo cliente que se conectara horas más tarde recibiría una alarma ya
-pasada como si acabara de ocurrir.
+La alerta de pánico **no** es retenida, y es deliberado: una alerta se define como un evento puntual.
 
+---
 ### Last Will and Testament (LWT)
 
 Es el mecanismo más relevante de la práctica. El dispositivo declara **al conectarse** un
@@ -190,58 +189,7 @@ Definiendo `USER_SETUP_LOADED=1` en `build_flags`, la librería ignora sus archi
 y usa los flags del `platformio.ini`, que **sí están versionados**. El proyecto compila en
 cualquier máquina recién clonado.
 
-### Credenciales en `secrets.h`
-
-Las credenciales salen del código fuente a un `include/secrets.h` que está en `.gitignore`,
-acompañado de un `secrets.h.example` versionado que documenta qué valores hacen falta. Es
-una mejora sobre el esquema de marcadores (`TU_TOKEN_AQUI`) de las prácticas anteriores:
-allí había que acordarse de no subir el archivo modificado; aquí **no se puede subir por
-descuido**.
-
 ---
-
-## Configuración del entorno (no versionada)
-
-Estas piezas viven en el PC, no en el repositorio, y se documentan aquí para poder
-reproducir el montaje.
-
-### Mosquitto
-
-Por defecto, Mosquitto 2.x **solo escucha en `localhost` y rechaza clientes anónimos**. Con
-la configuración de fábrica el ESP32 nunca podría conectarse. Se añadió al final de
-`C:\Program Files\mosquitto\mosquitto.conf`:
-
-```conf
-listener 1883 0.0.0.0
-allow_anonymous true
-```
-
-Tras reiniciar el servicio, la escucha pasó de `127.0.0.1` y `::1` a `0.0.0.0`.
-
-### Firewall de Windows
-
-Hace falta una regla de entrada para el puerto 1883, restringida a la subred local:
-
-```powershell
-New-NetFirewallRule -DisplayName "Mosquitto MQTT 1883 (practica 05)" `
-  -Direction Inbound -Protocol TCP -LocalPort 1883 `
-  -Action Allow -RemoteAddress LocalSubnet
-```
-
-> Probar con `mosquitto_pub` desde el propio PC **no valida esta regla**: Windows ataja el
-> tráfico dirigido a su propia IP sin pasarlo por el firewall. La única prueba real es la
-> conexión desde el ESP32.
-
-### Node-RED
-
-Se arranca con `node-red` y queda en `http://localhost:1880` (editor) y
-`http://localhost:1880/ui` (dashboard). Escucha en `0.0.0.0`, así que el dashboard también
-se abre desde el móvil en `http://192.168.1.6:1880/ui` — que es, además, la mejor
-demostración de la arquitectura: dos dashboards en dos dispositivos son simplemente dos
-clientes MQTT más.
-
----
-
 ## Dashboard de Node-RED
 
 Cinco grupos de widgets:
@@ -858,15 +806,8 @@ nada ni siquiera en su propia pantalla.
 - **Node-RED no está registrado como servicio**, así que no sobrevive a un reinicio del PC.
 - **`allow_anonymous true`** implica que cualquiera en la red puede publicar y suscribirse.
 
-## Seguridad
 
-El broker acepta clientes anónimos y el tráfico va en claro por el puerto 1883. Es
-aceptable para una práctica en red local y controlada, pero **no para producción**: allí
-correspondería autenticación con `mosquitto_passwd`, listas de control de acceso por tópico
-y TLS en el puerto 8883.
-
-Las credenciales de Wi-Fi viven únicamente en `secrets.h`, que no se versiona.
-
+---
 ## Resultado
 
 Sistema IoT completo y autónomo, sin dependencia de ninguna plataforma externa: el ESP32
