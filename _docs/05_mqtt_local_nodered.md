@@ -820,4 +820,4 @@ completo compila desde cero en cualquier máquina a partir del repositorio.
 
 ## Enlaces
 
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

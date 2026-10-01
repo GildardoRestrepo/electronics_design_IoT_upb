@@ -59,7 +59,7 @@ con el cronológico y cada entrega es localizable por su número.
 
 El código vive en las carpetas de práctica y la documentación en `_docs/`, con un archivo
 por práctica. La razón es que las bitácoras se editan en **Obsidian** como notas de clase:
-llevan frontmatter con `tags: tipo/clase` y enlaces internos `[[Ing. Electrónica]]` que las
+llevan frontmatter con `tags: tipo/clase` y enlaces internos `[[ing_electronica|Ing. Electrónica]]` que las
 integran a la bóveda de apuntes, mientras el `README.md` cumple la función distinta de ser
 la portada del repositorio en GitHub.
 
@@ -99,4 +99,4 @@ posteriores solo tienen que continuar.
 
 ## Enlaces
 
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

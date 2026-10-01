@@ -20,4 +20,4 @@ tags:
 
 ---
 ## Enlaces
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

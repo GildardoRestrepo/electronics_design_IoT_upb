@@ -73,4 +73,4 @@ periódica y muestra el último valor en la pantalla con indicación de estado p
 
 ---
 ## Enlaces
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

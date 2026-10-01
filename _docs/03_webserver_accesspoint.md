@@ -116,4 +116,4 @@ navegador sin recompilar, conservando la configuración tras apagones o reinicio
 
 ## Enlaces
 
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

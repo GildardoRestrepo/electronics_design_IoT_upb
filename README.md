@@ -168,3 +168,8 @@ const char *WIFI_PASS     = "TU_PASSWORD_AQUI";
 
 Distribuido bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICENSE).
 
+
+---
+## Enlaces
+[[proyectos_personal|Proyectos Electrónica]]
+[[ing_electronica|Ing. Electrónica]]

@@ -69,4 +69,4 @@ de control del dashboard, reflejando el último valor recibido y su antigüedad 
 
 ---
 ## Enlaces
-[[Ing. Electrónica]]
+[[ing_electronica|Ing. Electrónica]]
