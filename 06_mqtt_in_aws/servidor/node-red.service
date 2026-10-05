@@ -1,0 +1,34 @@
+# ==========================================================================
+# /etc/systemd/system/node-red.service  -  Practica #6 (Diseño Electronico)
+#
+# Convierte Node-RED en un servicio administrado por systemd, igual que
+# Mosquitto: arranca solo al encender la instancia, se reinicia si falla y
+# sobrevive al cierre de la sesion SSH.
+#
+#   sudo cp node-red.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now node-red
+# ==========================================================================
+
+[Unit]
+Description=Node-RED (Practica 06 - Diseño Electronico)
+After=network-online.target mosquitto.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Se ejecuta como el usuario normal de la AMI de Ubuntu, NO como root:
+# asi usa ~/.node-red como directorio de usuario y, si alguien lograra
+# ejecutar codigo desde el editor, no tendria privilegios de administrador.
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu
+# Limita el heap de Node.js: la instancia t3.micro solo tiene 1 GiB de RAM.
+Environment="NODE_OPTIONS=--max-old-space-size=256"
+ExecStart=/usr/bin/env node-red
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

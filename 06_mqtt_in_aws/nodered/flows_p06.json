@@ -1,0 +1,621 @@
+[
+  {
+    "id": "flow_p6",
+    "type": "tab",
+    "label": "Practica 06 - MQTT en AWS",
+    "disabled": false,
+    "info": "Dashboard de la practica 06 (Diseno Electronico).\n\nNode-RED corre en la MISMA instancia EC2 que Mosquitto, por eso el broker es 'localhost'. Sigue siendo un cliente MQTT mas: necesita usuario y clave como cualquier otro."
+  },
+  {
+    "id": "in_temp",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "temperatura",
+    "topic": "gilbert/ttgo/temperatura",
+    "qos": "1",
+    "datatype": "auto-detect",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 80,
+    "wires": [
+      [
+        "set_temp"
+      ]
+    ]
+  },
+  {
+    "id": "set_temp",
+    "type": "change",
+    "z": "flow_p6",
+    "name": "topic = Temperatura",
+    "rules": [
+      {
+        "t": "set",
+        "p": "topic",
+        "pt": "msg",
+        "to": "Temperatura",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 400,
+    "y": 80,
+    "wires": [
+      [
+        "gauge_temp",
+        "chart_hist"
+      ]
+    ]
+  },
+  {
+    "id": "gauge_temp",
+    "type": "ui_gauge",
+    "z": "flow_p6",
+    "name": "",
+    "group": "g_sensor",
+    "order": 1,
+    "width": 3,
+    "height": 4,
+    "gtype": "gage",
+    "title": "Temperatura",
+    "label": "C",
+    "format": "{{value}}",
+    "min": 0,
+    "max": "50",
+    "colors": [
+      "#00b500",
+      "#e6e600",
+      "#ca3838"
+    ],
+    "seg1": "",
+    "seg2": "",
+    "className": "",
+    "x": 660,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "in_hum",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "humedad",
+    "topic": "gilbert/ttgo/humedad",
+    "qos": "1",
+    "datatype": "auto-detect",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 140,
+    "y": 160,
+    "wires": [
+      [
+        "set_hum"
+      ]
+    ]
+  },
+  {
+    "id": "set_hum",
+    "type": "change",
+    "z": "flow_p6",
+    "name": "topic = Humedad",
+    "rules": [
+      {
+        "t": "set",
+        "p": "topic",
+        "pt": "msg",
+        "to": "Humedad",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 390,
+    "y": 160,
+    "wires": [
+      [
+        "gauge_hum",
+        "chart_hist"
+      ]
+    ]
+  },
+  {
+    "id": "gauge_hum",
+    "type": "ui_gauge",
+    "z": "flow_p6",
+    "name": "",
+    "group": "g_sensor",
+    "order": 2,
+    "width": 3,
+    "height": 4,
+    "gtype": "gage",
+    "title": "Humedad",
+    "label": "%",
+    "format": "{{value}}",
+    "min": 0,
+    "max": "100",
+    "colors": [
+      "#e6e600",
+      "#00b500",
+      "#0080ff"
+    ],
+    "seg1": "",
+    "seg2": "",
+    "className": "",
+    "x": 660,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "chart_hist",
+    "type": "ui_chart",
+    "z": "flow_p6",
+    "name": "historico",
+    "group": "g_hist",
+    "order": 1,
+    "width": 12,
+    "height": 6,
+    "label": "Ultimos 10 minutos",
+    "chartType": "line",
+    "legend": "true",
+    "xformat": "HH:mm:ss",
+    "interpolate": "linear",
+    "nodata": "Esperando datos del ESP32...",
+    "dot": false,
+    "ymin": "",
+    "ymax": "",
+    "removeOlder": "10",
+    "removeOlderPoints": "",
+    "removeOlderUnit": "60",
+    "cutout": 0,
+    "useOneColor": false,
+    "useUTC": false,
+    "colors": [
+      "#ca3838",
+      "#0080ff",
+      "#ff7f0e",
+      "#2ca02c",
+      "#98df8a",
+      "#d62728",
+      "#ff9896",
+      "#9467bd",
+      "#c5b0d5"
+    ],
+    "outputs": 1,
+    "useDifferentColor": false,
+    "className": "",
+    "x": 660,
+    "y": 220,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "in_sw",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "sw",
+    "topic": "gilbert/ttgo/sw",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 130,
+    "y": 260,
+    "wires": [
+      [
+        "fn_sw"
+      ]
+    ]
+  },
+  {
+    "id": "fn_sw",
+    "type": "function",
+    "z": "flow_p6",
+    "name": "formatear sw",
+    "func": "// El sensor publica el sw RETENIDO: '1' pulsado, '0' libre.\nvar on = (msg.payload === '1');\nmsg.payload = on ? 'PULSADO' : 'libre';\nmsg.color = on ? '#e6a700' : '#888888';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 260,
+    "wires": [
+      [
+        "txt_sw"
+      ]
+    ]
+  },
+  {
+    "id": "txt_sw",
+    "type": "ui_text",
+    "z": "flow_p6",
+    "group": "g_sw",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "name": "",
+    "label": "Boton del TTGO (sw)",
+    "format": "<font color=\"{{msg.color}}\"><b>{{msg.payload}}</b></font>",
+    "layout": "row-spread",
+    "className": "",
+    "x": 640,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "in_estado",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "estado sensor (LWT)",
+    "topic": "gilbert/ttgo/estado",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 160,
+    "y": 340,
+    "wires": [
+      [
+        "fn_estado"
+      ]
+    ]
+  },
+  {
+    "id": "fn_estado",
+    "type": "function",
+    "z": "flow_p6",
+    "name": "formatear estado",
+    "func": "// El broker publica 'offline' aqui por su cuenta si el cliente desaparece\n// sin despedirse (Last Will and Testament declarado al conectar).\nvar vivo = (msg.payload === 'online');\nmsg.payload = vivo ? 'CONECTADO' : 'DESCONECTADO';\nmsg.color = vivo ? '#00b500' : '#ca3838';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 410,
+    "y": 340,
+    "wires": [
+      [
+        "txt_estado"
+      ]
+    ]
+  },
+  {
+    "id": "txt_estado",
+    "type": "ui_text",
+    "z": "flow_p6",
+    "group": "g_estado",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "name": "",
+    "label": "Sensor",
+    "format": "<font color=\"{{msg.color}}\"><b>{{msg.payload}}</b></font>",
+    "layout": "row-spread",
+    "className": "",
+    "x": 640,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "in_estado_obs",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "estado observador (LWT)",
+    "topic": "gilbert/observador/estado",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 170,
+    "y": 400,
+    "wires": [
+      [
+        "fn_estado_obs"
+      ]
+    ]
+  },
+  {
+    "id": "fn_estado_obs",
+    "type": "function",
+    "z": "flow_p6",
+    "name": "formatear estado",
+    "func": "// El broker publica 'offline' aqui por su cuenta si el cliente desaparece\n// sin despedirse (Last Will and Testament declarado al conectar).\nvar vivo = (msg.payload === 'online');\nmsg.payload = vivo ? 'CONECTADO' : 'DESCONECTADO';\nmsg.color = vivo ? '#00b500' : '#ca3838';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 430,
+    "y": 400,
+    "wires": [
+      [
+        "txt_estado_obs"
+      ]
+    ]
+  },
+  {
+    "id": "txt_estado_obs",
+    "type": "ui_text",
+    "z": "flow_p6",
+    "group": "g_estado",
+    "order": 2,
+    "width": 6,
+    "height": 1,
+    "name": "",
+    "label": "Observador",
+    "format": "<font color=\"{{msg.color}}\"><b>{{msg.payload}}</b></font>",
+    "layout": "row-spread",
+    "className": "",
+    "x": 650,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "in_led1",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "led1 (sincroniza switch)",
+    "topic": "gilbert/ttgo/led1",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 170,
+    "y": 480,
+    "wires": [
+      [
+        "sw_led1"
+      ]
+    ]
+  },
+  {
+    "id": "sw_led1",
+    "type": "ui_switch",
+    "z": "flow_p6",
+    "name": "",
+    "label": "LED1 en la pantalla del ESP32",
+    "tooltip": "Publica 1/0 RETENIDO en gilbert/ttgo/led1",
+    "group": "g_control",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "decouple": "false",
+    "topic": "gilbert/ttgo/led1",
+    "topicType": "str",
+    "style": "",
+    "onvalue": "1",
+    "onvalueType": "str",
+    "onicon": "",
+    "oncolor": "",
+    "offvalue": "0",
+    "offvalueType": "str",
+    "officon": "",
+    "offcolor": "",
+    "animate": false,
+    "className": "",
+    "x": 420,
+    "y": 480,
+    "wires": [
+      [
+        "out_led1"
+      ]
+    ]
+  },
+  {
+    "id": "out_led1",
+    "type": "mqtt out",
+    "z": "flow_p6",
+    "name": "led1",
+    "topic": "gilbert/ttgo/led1",
+    "qos": "1",
+    "retain": "true",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker_aws",
+    "x": 640,
+    "y": 480,
+    "wires": []
+  },
+  {
+    "id": "in_led2",
+    "type": "mqtt in",
+    "z": "flow_p6",
+    "name": "led2 (sincroniza switch)",
+    "topic": "gilbert/ttgo/led2",
+    "qos": "1",
+    "datatype": "utf8",
+    "broker": "broker_aws",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 170,
+    "y": 540,
+    "wires": [
+      [
+        "sw_led2"
+      ]
+    ]
+  },
+  {
+    "id": "sw_led2",
+    "type": "ui_switch",
+    "z": "flow_p6",
+    "name": "",
+    "label": "LED2 en la pantalla del ESP32",
+    "tooltip": "Publica 1/0 RETENIDO en gilbert/ttgo/led2",
+    "group": "g_control",
+    "order": 2,
+    "width": 6,
+    "height": 1,
+    "passthru": false,
+    "decouple": "false",
+    "topic": "gilbert/ttgo/led2",
+    "topicType": "str",
+    "style": "",
+    "onvalue": "1",
+    "onvalueType": "str",
+    "onicon": "",
+    "oncolor": "",
+    "offvalue": "0",
+    "offvalueType": "str",
+    "officon": "",
+    "offcolor": "",
+    "animate": false,
+    "className": "",
+    "x": 420,
+    "y": 540,
+    "wires": [
+      [
+        "out_led2"
+      ]
+    ]
+  },
+  {
+    "id": "out_led2",
+    "type": "mqtt out",
+    "z": "flow_p6",
+    "name": "led2",
+    "topic": "gilbert/ttgo/led2",
+    "qos": "1",
+    "retain": "true",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker_aws",
+    "x": 640,
+    "y": 540,
+    "wires": []
+  },
+  {
+    "id": "broker_aws",
+    "type": "mqtt-broker",
+    "name": "Mosquitto (EC2 localhost)",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "node-red-aws",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": "",
+    "credentials": {
+      "user": "nodered",
+      "password": ""
+    }
+  },
+  {
+    "id": "tab_p6",
+    "type": "ui_tab",
+    "name": "Practica 06",
+    "icon": "dashboard",
+    "order": 1,
+    "disabled": false,
+    "hidden": false
+  },
+  {
+    "id": "g_sensor",
+    "type": "ui_group",
+    "name": "Sensor DHT11",
+    "tab": "tab_p6",
+    "order": 1,
+    "disp": true,
+    "width": 6,
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "g_estado",
+    "type": "ui_group",
+    "name": "Estado de los clientes (LWT)",
+    "tab": "tab_p6",
+    "order": 2,
+    "disp": true,
+    "width": 6,
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "g_control",
+    "type": "ui_group",
+    "name": "Control (dashboard -> ESP32)",
+    "tab": "tab_p6",
+    "order": 3,
+    "disp": true,
+    "width": 6,
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "g_sw",
+    "type": "ui_group",
+    "name": "Entrada del ESP32",
+    "tab": "tab_p6",
+    "order": 4,
+    "disp": true,
+    "width": 6,
+    "collapse": false,
+    "className": ""
+  },
+  {
+    "id": "g_hist",
+    "type": "ui_group",
+    "name": "Historico",
+    "tab": "tab_p6",
+    "order": 5,
+    "disp": true,
+    "width": 12,
+    "collapse": false,
+    "className": ""
+  }
+]

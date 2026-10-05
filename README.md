@@ -39,7 +39,13 @@ en **IoT y sistemas embebidos**. El hardware base es una placa **ESP32 TTGO T-Di
 - **Node-RED** + paleta `node-red-dashboard` — el dashboard.
 - **MQTT Explorer** — inspección del árbol de tópicos.
 
-> En la práctica 05 **no hay que tocar `User_Setup_Select.h`**: la configuración del
+**Práctica 06 — MQTT en la nube (AWS):**
+
+- **AWS EC2** (`t3.micro`, Ubuntu Server 26.04 LTS) como servidor, administrado por **SSH**.
+- **Mosquitto** con usuario y contraseña, y **Node-RED** + `node-red-dashboard` en la
+  instancia, ambos como servicios de `systemd`.
+
+> En las prácticas 05 y 06 **no hay que tocar `User_Setup_Select.h`**: la configuración del
 > TTGO T-Display va en los `build_flags` de `platformio.ini` y está versionada, así que el
 > proyecto compila recién clonado en cualquier máquina.
 
@@ -60,12 +66,17 @@ en **IoT y sistemas embebidos**. El hardware base es una placa **ESP32 TTGO T-Di
 │   └── ubidots_dht11_ap/           #   DHT11+Ubidots (PubSubClient) y portal de config WiFi
 ├── 05_mqtt_local_nodered/           # Práctica 5: broker MQTT local + dashboard Node-RED
 │   └── esp32_mqtt_local/            #   Proyecto PlatformIO (no es un sketch .ino)
+├── 06_mqtt_in_aws/                  # Práctica 6: Mosquitto + Node-RED en AWS EC2
+│   ├── esp32_mqtt_aws/              #   PlatformIO con dos entornos: sensor y observador
+│   ├── servidor/                    #   Configuración de Mosquitto y servicio de Node-RED
+│   └── nodered/                     #   Flujo del dashboard (flows_p06.json)
 ├── _docs/                          # Bitácora y documentación de cada práctica
 │   ├── 01_ubidots_connection.md
 │   ├── 02_ubidots_subscription.md
 │   ├── 03_webserver_accesspoint.md
 │   ├── 04_repositorio_entregables.md
-│   └── 05_mqtt_local_nodered.md
+│   ├── 05_mqtt_local_nodered.md
+│   └── 06_mqtt_in_aws.md
 ├── LICENSE
 └── README.md
 ```
@@ -109,12 +120,21 @@ la plataforma intermedia hay que resolver a mano tres mecanismos del protocolo: 
 cuenta la caída del dispositivo). Incluye un canal de alertas que demuestra el reparto
 **uno a muchos**. El entorno cambia a **VS Code + PlatformIO**.
 
+### 06 — MQTT en la nube: AWS + Mosquitto + Node-RED
+El broker y el dashboard se mudan a una **instancia EC2 de AWS** con IP pública, así que los
+clientes ya no tienen que compartir red. Al quedar expuesto a Internet, el broker exige
+**usuario y contraseña** y el *Security Group* hace de firewall. Node-RED y Mosquitto se
+administran como **servicios de `systemd`** (gestión de procesos en Linux). El firmware se
+divide en dos entornos de PlatformIO: un **sensor** (DHT11, botón `sw`, `led1`/`led2`) y un
+**observador** que solo se suscribe, posiblemente desde otra red.
+
 Consultar la bitácora de cada práctica en [`_docs/`](_docs):
 [Práctica 1](_docs/01_ubidots_connection.md) ·
 [Práctica 2](_docs/02_ubidots_subscription.md) ·
 [Práctica 3](_docs/03_webserver_accesspoint.md) ·
 [Práctica 4](_docs/04_repositorio_entregables.md) ·
-[Práctica 5](_docs/05_mqtt_local_nodered.md).
+[Práctica 5](_docs/05_mqtt_local_nodered.md) ·
+[Práctica 6](_docs/06_mqtt_in_aws.md).
 
 ---
 
@@ -134,6 +154,14 @@ Consultar la bitácora de cada práctica en [`_docs/`](_docs):
 2. Copia `include/secrets.h.example` como `include/secrets.h` y rellena tu Wi-Fi y la IP
    del PC donde corre Mosquitto.
 3. Compila y carga (`PlatformIO: Upload`). Las librerías se descargan solas.
+
+### Práctica 06 (PlatformIO, dos firmwares)
+
+1. Monta el servidor en AWS siguiendo la [bitácora de la práctica 6](_docs/06_mqtt_in_aws.md).
+2. Abre `06_mqtt_in_aws/esp32_mqtt_aws`, copia `include/secrets.h.example` como
+   `include/secrets.h` y rellena el Wi-Fi, la **IP pública** de la instancia y el usuario MQTT.
+3. Carga cada placa con su entorno: `pio run -e sensor -t upload` y
+   `pio run -e observador -t upload`.
 
 > **Carga en el TTGO T-Display:** el auto-reset por DTR/RTS falla a menudo en esta placa y
 > aparece `Failed to connect to ESP32: No serial data received`. En ese caso hay que forzar
@@ -155,8 +183,9 @@ const char *WIFI_SSID     = "TU_WIFI_AQUI";
 const char *WIFI_PASS     = "TU_PASSWORD_AQUI";
 ```
 
-**Práctica 05** — archivo aparte, ignorado por git. Copia
-`esp32_mqtt_local/include/secrets.h.example` como `secrets.h` y rellénalo. Al estar
+**Prácticas 05 y 06** — archivo aparte, ignorado por git. Copia
+`include/secrets.h.example` del proyecto como `secrets.h` y rellénalo (en la 06 incluye
+además el usuario y la clave del broker). Al estar
 `secrets.h` en el `.gitignore`, no se puede subir por descuido.
 
 > ⚠️ Un secreto publicado en un repositorio **queda en el historial de git aunque después
